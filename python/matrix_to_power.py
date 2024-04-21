@@ -23,17 +23,15 @@ def find_p_matrix(A):
 
 
 def to_power_diag(A, power):
+    """
+    Ascend matrix A to some given power using its diagonal decomposition
+    """
     P, inv_P = find_p_matrix(A)
     eigenvals = eigen.find_eigenvalues(A)
-    
+
     D_powered = np.diag(np.power(eigenvals, power))
-    
+
     return np.dot(np.dot(P, D_powered), inv_P)
-
-
-def to_power_jordan(A, power):
-    for _ in range(power):
-        pass
 
 
 if __name__ == "__main__":
