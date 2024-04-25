@@ -43,9 +43,9 @@ def get_survival_rate_for_age_group(age_grp, pop, mort):
     mort_age_grp = mort[mort['AgeGrp'] == str(age_grp)]
 
     for _, row in pop_age_grp.iterrows():
-        births.append(row['PopTotal'])
+        births.append(row['PopFemale'])
     for _, new_row in mort_age_grp.iterrows():
-        deaths.append(new_row['DeathTotal'])
+        deaths.append(new_row['DeathFemale'])
 
     for entry in zip(births, deaths):
         survival_rate: float = 1 - (entry[1] / entry[0])
@@ -102,9 +102,15 @@ def build_leslie(size, fert, mort, pop):
 
 
 if __name__ == "__main__":
-    fertility_data = data_reader.get_fertility_data("./data/fertility.csv")
-    mortaliti_data = data_reader.get_mortality_data("./data/mortality.csv")
-    population_data = data_reader.get_population_data("./data/population_single_age_sex_2019.csv")
+    # On Linux device
+    # fertility_data = data_reader.get_fertility_data("./data/fertility.csv")
+    # mortaliti_data = data_reader.get_mortality_data("./data/mortality.csv")
+    # population_data = data_reader.get_population_data("./data/population_single_age_sex_2019.csv")
+
+    # On Windows device
+    fertility_data = data_reader.get_fertility_data("../main_data/fertility.csv")
+    mortaliti_data = data_reader.get_mortality_data("../main_data/mortality.csv")
+    population_data = data_reader.get_population_data("../data/population_single_age_sex_2019.csv")
 
     leslie_matrix = build_leslie(100, fertility_data, mortaliti_data, population_data)
 
