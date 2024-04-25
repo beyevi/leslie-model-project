@@ -102,9 +102,9 @@ def build_leslie(size, fert, mort, pop):
 
 
 if __name__ == "__main__":
-    fertility_data = data_reader.get_fertility_data("../main_data/fertility.csv")
-    mortaliti_data = data_reader.get_mortality_data("../main_data/mortality.csv")
-    population_data = data_reader.get_population_data("../data/population_single_age_sex_2019.csv")
+    fertility_data = data_reader.get_fertility_data("./data/fertility.csv")
+    mortaliti_data = data_reader.get_mortality_data("./data/mortality.csv")
+    population_data = data_reader.get_population_data("./data/population_single_age_sex_2019.csv")
 
     leslie_matrix = build_leslie(100, fertility_data, mortaliti_data, population_data)
 
