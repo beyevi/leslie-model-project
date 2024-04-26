@@ -65,16 +65,25 @@ def get_fertility_for_age_group(age_grp, fert):
     :param age_grp: desired age class
     :param fert: fertility dataframe
     """
-    if not 15 <= age_grp <= 49:
-        linear_interpolation()
+    if 15 <= age_grp <= 49:
+        selected_fertility_data = fert[fert['AgeGrp'] == age_grp]
 
-    selected_fertility_data = fert[fert['AgeGrp'] == age_grp]
+        asfr = []
+        for _, row in selected_fertility_data.iterrows():
+            asfr.append(row['ASFR'])
 
-    asfr = []
-    for _, row in selected_fertility_data.iterrows():
-        asfr.append(row['ASFR'])
-
-    return sum(asfr) / len(asfr)
+        return sum(asfr) / len(asfr)
+    else:
+        available_data = fert[(fert['AgeGrp'] >= 15) & (fert['AgeGrp'] <= 49)]
+        # Find the nearest available ages for interpolation
+        lower_age = available_data['AgeGrp'].max(available_data['AgeGrp'][available_data['AgeGrp'] < age_grp])
+        upper_age = available_data['AgeGrp'].min(available_data['AgeGrp'][available_data['AgeGrp'] > age_grp])
+        
+        # Perform linear interpolation
+        lower_asfr = available_data.loc[available_data['AgeGrp'] == lower_age, 'ASFR'].values[0]
+        upper_asfr = available_data.loc[available_data['AgeGrp'] == upper_age, 'ASFR'].values[0]
+        
+        interpolated_asfr = linear_interpolation(age_grp, lower_age, lower_asfr, upper_age, upper_asfr)
 
 
 def build_leslie(size, fert, mort, pop):
