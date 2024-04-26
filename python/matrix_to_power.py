@@ -8,45 +8,50 @@ import numpy as np
 import find_eigens as eigen
 
 
-def find_p_matrix(A):
+def find_p_matrix(matrix):
     """
     Find matrix P (and its inverse) consisting of eigenvectors of a given matrix
     """
- 
-    eigenvals = eigen.find_eigenvalues(A)
-    eigenvecs = eigen.find_eigenvectors(A, eigenvals)
-    
-    P = np.column_stack(eigenvecs)
+    eigenvectors = eigen.find_eigenvectors(matrix)
+
+    P = eigenvectors
     inv_P = np.linalg.inv(P)
-    
+
     return P, inv_P
 
 
-def to_power_diag(A, power):
+def to_power_diag(matrix, power):
     """
     Ascend matrix A to some given power using its diagonal decomposition
     """
-    P, inv_P = find_p_matrix(A)
-    eigenvals = eigen.find_eigenvalues(A)
+    P, inv_P = find_p_matrix(matrix)
+    eigenvals = eigen.find_eigenvalues(matrix)
 
-    D_powered = np.diag(np.power(eigenvals, power))
+    eigenvals_powered = [ev ** power for ev in eigenvals]
+
+    D_powered = np.diag(eigenvals_powered)
 
     return np.dot(np.dot(P, D_powered), inv_P)
 
 
 if __name__ == "__main__":
-    A = np.array([[2, 1, 0], [1, 3, 1], [0, 1, 4]], dtype=float)
-    print(to_power_diag(A, 5))
+    print("Leslie Matrix Usage Example (Predicting 10 Gens)".center(100, "="))
+    n_0 = np.array([
+        [45],
+        [18],
+        [11],
+        [4]
+    ])
 
-    import build_leslie
-    import data_reader
+    leslie_matrix = np.array([
+        [0, 1, 1.5, 1.2],
+        [0.8, 0, 0, 0],
+        [0, 0.5, 0, 0],
+        [0, 0, 0.25, 0]
+    ], dtype=float)
 
-    fertility_data = data_reader.get_fertility_data("./data/fertility.csv")
-    mortaliti_data = data_reader.get_mortality_data("./data/mortality.csv")
-    population_data = data_reader.get_population_data("./data/population_single_age_sex_2019.csv")
+    for k in range(1, 11):
+        L_n = to_power_diag(leslie_matrix, k)
 
-    leslie_matrix = build_leslie.build_leslie(100, fertility_data, mortaliti_data, population_data)
-    
-    L_n = to_power_diag(leslie_matrix, 5)
-
-    np.savetxt("power_leslie.txt", L_n)
+        n_k = np.dot(L_n, n_0)
+        print(n_k, "\n")

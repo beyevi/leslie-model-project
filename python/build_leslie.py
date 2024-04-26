@@ -7,6 +7,10 @@ import numpy as np
 import data_reader
 
 
+def linear_interpolation(x, x1, y1, x2, y2):
+    return y1 + ((x - x1) / (x2 - x1)) * (y2 - y1)
+
+
 def multiply_matrices(matrix1, matrix2):
     """
     General matrix multiplication algorithm
@@ -62,7 +66,7 @@ def get_fertility_for_age_group(age_grp, fert):
     :param fert: fertility dataframe
     """
     if not 15 <= age_grp <= 49:
-        return 0
+        linear_interpolation()
 
     selected_fertility_data = fert[fert['AgeGrp'] == age_grp]
 
@@ -103,14 +107,14 @@ def build_leslie(size, fert, mort, pop):
 
 if __name__ == "__main__":
     # On Linux device
-    # fertility_data = data_reader.get_fertility_data("./data/fertility.csv")
-    # mortaliti_data = data_reader.get_mortality_data("./data/mortality.csv")
-    # population_data = data_reader.get_population_data("./data/population_single_age_sex_2019.csv")
+    fertility_data = data_reader.get_fertility_data("./data/fertility.csv")
+    mortaliti_data = data_reader.get_mortality_data("./data/mortality.csv")
+    population_data = data_reader.get_population_data("./data/population_single_age_sex_2019.csv")
 
     # On Windows device
-    fertility_data = data_reader.get_fertility_data("../main_data/fertility.csv")
-    mortaliti_data = data_reader.get_mortality_data("../main_data/mortality.csv")
-    population_data = data_reader.get_population_data("../data/population_single_age_sex_2019.csv")
+    # fertility_data = data_reader.get_fertility_data("../main_data/fertility.csv")
+    # mortaliti_data = data_reader.get_mortality_data("../main_data/mortality.csv")
+    # population_data = data_reader.get_population_data("../data/population_single_age_sex_2019.csv")
 
     leslie_matrix = build_leslie(100, fertility_data, mortaliti_data, population_data)
 
